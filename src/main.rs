@@ -32,64 +32,6 @@ pub fn initialize_heap(hbl_heap: util::PointerAndSize) -> util::PointerAndSize {
     }
 }
 
-pub struct Square {
-    x: i32,
-    y: i32,
-    size: i32,
-    x_incr: i32,
-    y_incr: i32,
-    x_mult: i32,
-    y_mult: i32,
-    color: ui2d::RGBA8
-}
-
-impl Square {
-    pub fn new(x: i32, y: i32, size: i32, color: ui2d::RGBA8) -> Self {
-        Self { x: x, y: y, size: size, x_incr: 1, y_incr: 1, x_mult: 1, y_mult: 1, color: color }
-    }
-
-    pub fn handle_render(&mut self, surface: &mut ui2d::SurfaceEx) {
-        surface.draw(self.x, self.y, self.size, self.size, self.color, false);
-
-        self.x += self.x_incr * self.x_mult;
-        self.y += self.y_incr * self.y_mult;
-
-        if self.x <= 0 {
-            if self.x_incr < 0 {
-                self.x_incr -= 1;
-                self.x_incr = -self.x_incr;
-            }
-            self.x += self.x_incr * self.x_mult;
-            self.x_mult += 1;
-        }
-        else if (self.x + self.size) as u32 >= surface.get_width() {
-            if self.x_incr > 0 {
-                self.x_incr += 1;
-                self.x_incr = -self.x_incr;
-            }
-            self.x += self.x_incr * self.x_mult;
-            self.x_mult += 1;
-        }
-
-        if self.y <= 0 {
-            if self.y_incr < 0 {
-                self.y_incr -= 1;
-                self.y_incr = -self.y_incr;
-            }
-            self.y += self.y_incr * self.y_mult;
-            self.y_mult += 1;
-        }
-        else if (self.y + self.size) as u32 >= surface.get_height() {
-            if self.y_incr > 0 {
-                self.y_incr += 1;
-                self.y_incr = -self.y_incr;
-            }
-            self.y += self.y_incr * self.y_mult;
-            self.y_mult += 1;
-        }
-    }
-}
-
 #[no_mangle]
 pub fn main() -> Result<()> {
     let mut gpu_ctx = gpu::Context::new(gpu::NvDrvServiceKind::Applet, gpu::ViServiceKind::System, 0x800000)?;
