@@ -1,0 +1,16 @@
+[package]
+name = "gpu-simple-based"
+version = "0.1.0"
+authors = ["Jean Santos"]
+edition = "2021"
+
+[dependencies]
+nx = { git = "https://github.com/aarch64-switch-rs/nx", features = [ "input" ] }
+ui2d = { git = "https://github.com/aarch64-switch-rs/examples", rev="d3d471927c842845ca37424ff579271351bf5fb4"  }
+
+[package.metadata.nx.nro]
+nacp = { default_name = "gpu-simple", default_author = "XorTroll", version = "Example" }
+
+[build-dependencies]
+bindgen = "0.63.0"
+cc = "1.0.78"
