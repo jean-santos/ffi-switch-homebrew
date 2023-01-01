@@ -1,12 +1,11 @@
 extern crate bindgen;
 
 use std::env;
+use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
-use std::path::Path;
 
 fn main() {
-
     let out_dir = env::var("OUT_DIR").unwrap();
     let cargo_manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
     let relative_path_out_dir = out_dir.replace(&cargo_manifest_dir, &"");
@@ -19,19 +18,24 @@ fn main() {
     let output = Command::new("docker")
         .args(args.split_whitespace())
         .current_dir(&Path::new(&cargo_manifest_dir))
-        .output().unwrap();
-        
-
+        .output()
+        .unwrap();
 
     println!("cargo:warning={}={}", "DOCKER_EXIT_CODE", &output.status);
-    println!("cargo:warning={}={}", "DOCKER_STDOUT", String::from_utf8(output.stdout).unwrap());
-    println!("cargo:warning={}={}", "DOCKER_STDERR", String::from_utf8(output.stderr).unwrap());
-
+    println!(
+        "cargo:warning={}={}",
+        "DOCKER_STDOUT",
+        String::from_utf8(output.stdout).unwrap()
+    );
+    println!(
+        "cargo:warning={}={}",
+        "DOCKER_STDERR",
+        String::from_utf8(output.stderr).unwrap()
+    );
 
     println!("cargo:rustc-link-search=native={}", out_dir);
     println!("cargo:rustc-link-lib=static=coiso");
     println!("cargo:rerun-if-changed=src/cool.c");
-
 
     let bindings = bindgen::Builder::default()
         // The input header we would like to generate
@@ -49,12 +53,10 @@ fn main() {
 
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-    // let out_path = PathBuf::from("/tmp/");
     bindings
         .write_to_file(out_path.join("bindings.rs"))
         .expect("Couldn't write bindings!");
 }
-
 
 /// Print relevant environment variables
 fn print_env() {
